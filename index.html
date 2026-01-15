@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>2FA Secret - DinhNT24</title>
+  <style>
+    body { font-family: Arial; padding: 40px }
+    input, button { padding: 10px; width: 340px; margin-top: 10px }
+    .code { font-size: 28px; margin-top: 20px; font-weight: bold; color: #0a58ca }
+  </style>
+</head>
+<body>
+
+<h2>2FA Secret - DinhNT24</h2>
+
+<input id="secret" placeholder="Nhập Base32 2FA Secret">
+<br>
+<button onclick="generateTOTP()">Lấy 2FA Code</button>
+
+<div id="result" class="code"></div>
+
+<script>
+/* ---------- Base32 Decode ---------- */
+function base32ToBytes(base32) {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
+  let bits = "", bytes = []
+
+  base32 = base32.replace(/=+$/, "").toUpperCase()
+
+  for (let c of base32) {
+    const val = alphabet.indexOf(c)
+    if (val === -1) throw new Error("Nhập sai Base32")
+    bits += val.toString(2).padStart(5, "0")
+  }
+
+  for (let i = 0; i + 8 <= bits.length; i += 8) {
+    bytes.push(parseInt(bits.substring(i, i + 8), 2))
+  }
+
+  return new Uint8Array(bytes)
+}
+
+/* ---------- HMAC-SHA1 ---------- */
+async function hmacSha1(key, msg) {
+  const cryptoKey = await crypto.subtle.importKey(
+    "raw",
+    key,
+    { name: "HMAC", hash: "SHA-1" },
+    false,
+    ["sign"]
+  )
+  return new Uint8Array(await crypto.subtle.sign("HMAC", cryptoKey, msg))
+}
+
+/* ---------- Generate TOTP ---------- */
+async function generateTOTP() {
+  try {
+    const secret = document.getElementById("secret").value.replace(/\s+/g, "").toUpperCase().trim()
+    if (!secret) return alert("Nhập 2FA Secret")
+
+    const key = base32ToBytes(secret)
+
+    const time = Math.floor(Date.now() / 1000 / 30)
+    const buffer = new ArrayBuffer(8)
+    const view = new DataView(buffer)
+
+    view.setUint32(4, time)
+
+    const hmac = await hmacSha1(key, buffer)
+
+    const offset = hmac[hmac.length - 1] & 0xf
+    const code =
+      ((hmac[offset] & 0x7f) << 24) |
+      ((hmac[offset + 1] & 0xff) << 16) |
+      ((hmac[offset + 2] & 0xff) << 8) |
+      (hmac[offset + 3] & 0xff)
+
+    const otp = (code % 1_000_000).toString().padStart(6, "0")
+
+    document.getElementById("result").innerText =
+      "Code: " + otp
+
+  } catch (e) {
+    alert("Nhập sai 2FA Secret")
+  }
+}
+</script>
+
+</body>
+</html>
