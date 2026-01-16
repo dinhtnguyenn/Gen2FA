@@ -20,24 +20,114 @@
 <div id="result" class="code"></div>
 
 <script>
+/* =====================================================
+   🔐 ANTI F12 / DEVTOOLS / VIEW SOURCE
+===================================================== */
+(function () {
+
+  let blocked = false;
+  const THRESHOLD = 160;
+
+  function showFakePage(reason) {
+    if (blocked) return;
+    blocked = true;
+
+    console.warn("Blocked:", reason);
+
+    document.documentElement.innerHTML = `
+      <html>
+      <head>
+        <title>404</title>
+        <style>
+          body {
+            background:#0d1117;
+            color:#c9d1d9;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            font-family:monospace;
+          }
+        </style>
+      </head>
+      <body>
+        <div>
+          <h1>404 - Not Found</h1>
+          <p>Resource unavailable.</p>
+        </div>
+      </body>
+      </html>
+    `;
+  }
+
+  /* Chặn phím */
+  document.addEventListener("keydown", e => {
+    if (
+      e.key === "F12" ||
+      (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key)) ||
+      (e.ctrlKey && e.key === "U")
+    ) {
+      e.preventDefault();
+      showFakePage("Shortcut");
+    }
+  });
+
+  /* Chặn chuột phải */
+  document.addEventListener("contextmenu", e => {
+    e.preventDefault();
+    showFakePage("Right Click");
+  });
+
+  /* Phát hiện DevTools bằng viewport */
+  function detectBySize() {
+    if (
+      window.outerWidth - window.innerWidth > THRESHOLD ||
+      window.outerHeight - window.innerHeight > THRESHOLD
+    ) {
+      showFakePage("DevTools Size");
+    }
+  }
+
+  /* Phát hiện debugger */
+  function detectDebugger() {
+    const start = performance.now();
+    debugger;
+    if (performance.now() - start > 100) {
+      showFakePage("Debugger");
+    }
+  }
+
+  setInterval(() => {
+    detectBySize();
+    detectDebugger();
+  }, 500);
+
+})();
+</script>
+
+<script>
+/* =====================================================
+   🔑 2FA TOTP LOGIC
+===================================================== */
+
 /* ---------- Base32 Decode ---------- */
 function base32ToBytes(base32) {
-  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
-  let bits = "", bytes = []
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+  let bits = "", bytes = [];
 
-  base32 = base32.replace(/=+$/, "").toUpperCase()
+  base32 = base32.replace(/=+$/, "").toUpperCase();
 
   for (let c of base32) {
-    const val = alphabet.indexOf(c)
-    if (val === -1) throw new Error("Nhập sai Base32")
-    bits += val.toString(2).padStart(5, "0")
+    const val = alphabet.indexOf(c);
+    if (val === -1) throw new Error("Sai Base32");
+    bits += val.toString(2).padStart(5, "0");
   }
 
   for (let i = 0; i + 8 <= bits.length; i += 8) {
-    bytes.push(parseInt(bits.substring(i, i + 8), 2))
+    bytes.push(parseInt(bits.slice(i, i + 8), 2));
   }
 
-  return new Uint8Array(bytes)
+  return new Uint8Array(bytes);
 }
 
 /* ---------- HMAC-SHA1 ---------- */
@@ -48,40 +138,43 @@ async function hmacSha1(key, msg) {
     { name: "HMAC", hash: "SHA-1" },
     false,
     ["sign"]
-  )
-  return new Uint8Array(await crypto.subtle.sign("HMAC", cryptoKey, msg))
+  );
+  return new Uint8Array(await crypto.subtle.sign("HMAC", cryptoKey, msg));
 }
 
 /* ---------- Generate TOTP ---------- */
 async function generateTOTP() {
   try {
-    const secret = document.getElementById("secret").value.replace(/\s+/g, "").toUpperCase().trim()
-    if (!secret) return alert("Nhập 2FA Secret")
+    const secret = document
+      .getElementById("secret")
+      .value.replace(/\s+/g, "")
+      .toUpperCase()
+      .trim();
 
-    const key = base32ToBytes(secret)
+    if (!secret) return alert("Nhập 2FA Secret");
 
-    const time = Math.floor(Date.now() / 1000 / 30)
-    const buffer = new ArrayBuffer(8)
-    const view = new DataView(buffer)
+    const key = base32ToBytes(secret);
+    const time = Math.floor(Date.now() / 1000 / 30);
 
-    view.setUint32(4, time)
+    const buffer = new ArrayBuffer(8);
+    const view = new DataView(buffer);
+    view.setUint32(4, time);
 
-    const hmac = await hmacSha1(key, buffer)
+    const hmac = await hmacSha1(key, buffer);
+    const offset = hmac[hmac.length - 1] & 0xf;
 
-    const offset = hmac[hmac.length - 1] & 0xf
     const code =
       ((hmac[offset] & 0x7f) << 24) |
       ((hmac[offset + 1] & 0xff) << 16) |
       ((hmac[offset + 2] & 0xff) << 8) |
-      (hmac[offset + 3] & 0xff)
+      (hmac[offset + 3] & 0xff);
 
-    const otp = (code % 1_000_000).toString().padStart(6, "0")
+    const otp = (code % 1_000_000).toString().padStart(6, "0");
 
-    document.getElementById("result").innerText =
-      "Code: " + otp
+    document.getElementById("result").innerText = "Code: " + otp;
 
-  } catch (e) {
-    alert("Nhập sai 2FA Secret")
+  } catch {
+    alert("Nhập sai 2FA Secret");
   }
 }
 </script>
