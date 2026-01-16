@@ -19,9 +19,6 @@
 
 <div id="result" class="code"></div>
 
-<!-- =====================================================
-     🔐 ANTI F12 / DEVTOOLS / VIEW SOURCE
-===================================================== -->
 <script>
 (function () {
 
@@ -52,7 +49,7 @@
       <body>
         <div>
           <h1>🛑 DỪNG LẠI</h1>
-          <p>Không cho phép xem mã nguồn</p>
+          <p>Bạn đang truy cập trái phép</p>
           <p>F5 để tiếp tục</p>
         </div>
       </body>
@@ -82,15 +79,7 @@
 
 })();
 </script>
-
-<!-- =====================================================
-     🔒 CORE LOGIC (ENCODE – VIEW-SOURCE VÔ NGHĨA)
-===================================================== -->
 <script>
-/*
-  ❗ View-source chỉ thấy payload này
-  ❌ Không thấy thuật toán
-*/
 
 const payload = `
 ZnVuY3Rpb24gYjMyVG9CeXRlcyhiKXtjb25zdCBhPSJBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWjIzNDU2NyI7bGV0IGJpdHM9IiIsYnl0ZXM9W107Yj1iLnJlcGxhY2UoLz0rJC8sIiIpLnRvVXBwZXJDYXNlKCk7Zm9yKGxldCBjIG9mIGIpe2NvbnN0IHY9YS5pbmRleE9mKGMpO2lmKHY9PT0tMSl0aHJvdyAwO2JpdHMrPXYudG9TdHJpbmcoMikucGFkU3RhcnQoNSwiMCIpfWZvcihsZXQgaT0wO2krODw9Yml0cy5sZW5ndGg7aSs9OCl7Ynl0ZXMucHVzaChwYXJzZUludChiaXRzLnN1YnN0cmluZyhpLGkrOCksMikpfXJldHVybiBuZXcgVWludDhBcnJheShieXRlcyk7fQphc3luYyBmdW5jdGlvbiBobWFjU2hhMShrLG0pe2NvbnN0IGtleT1hd2FpdCBjcnlwdG8uc3VidGxlLmltcG9ydEtleSgicmF3IixrLHtuYW1lOiJITUFDIixoYXNoOiJTSEEtMSJ9LGZhbHNlLFsic2lnbiJdKTtyZXR1cm4gbmV3IFVpbnQ4QXJyYXkoYXdhaXQgY3J5cHRvLnN1YnRsZS5zaWduKCJITUFDIixrZXksbSkpO30KZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoImJ0biIpLm9uY2xpY2s9YXN5bmMoKT0+e2NvbnN0IHNlY3JldD1kb2N1bWVudC5nZXRFbGVtZW50QnlJZCgic2VjcmV0IikudmFsdWUucmVwbGFjZSgvXHMrL2csIiIpLnRvVXBwZXJDYXNlKCkudHJpbSgpO2lmKCFzZWNyZXQpcmV0dXJuIGFsZXJ0KCJOaOG6rXAgMkZBIFNlY3JldCIpO2NvbnN0IGtleT1iMzJUb0J5dGVzKHNlY3JldCk7Y29uc3QgdD1NYXRoLmZsb29yKERhdGUubm93KCkvMTAwMC8zMCk7Y29uc3QgYnVmPW5ldyBBcnJheUJ1ZmZlcig4KTtjb25zdCB2PW5ldyBEYXRhVmlldyhidWYpO3Yuc2V0VWludDMyKDQsdCk7Y29uc3QgaD1hd2FpdCBobWFjU2hhMShrZXksYnVmKTtjb25zdCBvPWg[aC5sZW5ndGgtMV0mMHg7Y29uc3QgY29kZT0oKGhbb10mMHhmKTw8MjQpfCgoaFtvKzFdJjB4ZmYpPDwxNil8KChoW28rMl0mMHhmZik8PDgpfChoW28rM10mMHhmZik7ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoInJlc3VsdCIpLmlubmVyVGV4dD0iQ29kZTogIisoY29kZSUxMDAwMDAwKS50b1N0cmluZygpLnBhZFN0YXJ0KDYsIjAiKTt9
