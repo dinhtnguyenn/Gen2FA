@@ -21,40 +21,14 @@
 
 <script>
 (function () {
-
   let blocked = false;
   const THRESHOLD = 160;
 
-  function fake(reason) {
+  function fake() {
     if (blocked) return;
     blocked = true;
-
-    document.documentElement.innerHTML = `
-      <html>
-      <head>
-        <title>404</title>
-        <style>
-          body{
-            background:#0d1117;
-            color:#c9d1d9;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            height:100vh;
-            font-family:monospace;
-            text-align:center;
-          }
-        </style>
-      </head>
-      <body>
-        <div>
-          <h1>🛑 DỪNG LẠI</h1>
-          <p>Bạn đang truy cập trái phép</p>
-          <p>F5 để tiếp tục</p>
-        </div>
-      </body>
-      </html>
-    `;
+    document.documentElement.innerHTML =
+      "<h1 style='text-align:center;margin-top:20%'>🛑 Không cho xem mã nguồn</h1>";
   }
 
   document.addEventListener("contextmenu", e => e.preventDefault());
@@ -66,7 +40,7 @@
       (e.ctrlKey && e.shiftKey && ["I","J","C"].includes(e.key))
     ) {
       e.preventDefault();
-      fake("shortcut");
+      fake();
     }
   });
 
@@ -74,17 +48,14 @@
     if (
       window.outerWidth - window.innerWidth > THRESHOLD ||
       window.outerHeight - window.innerHeight > THRESHOLD
-    ) fake("devtools");
+    ) fake();
   }, 500);
-
 })();
 </script>
+
 <script>
-
-const payload = `
-ZnVuY3Rpb24gYjMyVG9CeXRlcyhiKXtjb25zdCBhPSJBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWjIzNDU2NyI7bGV0IGJpdHM9IiIsYnl0ZXM9W107Yj1iLnJlcGxhY2UoLz0rJC8sIiIpLnRvVXBwZXJDYXNlKCk7Zm9yKGxldCBjIG9mIGIpe2NvbnN0IHY9YS5pbmRleE9mKGMpO2lmKHY9PT0tMSl0aHJvdyAwO2JpdHMrPXYudG9TdHJpbmcoMikucGFkU3RhcnQoNSwiMCIpfWZvcihsZXQgaT0wO2krODw9Yml0cy5sZW5ndGg7aSs9OCl7Ynl0ZXMucHVzaChwYXJzZUludChiaXRzLnN1YnN0cmluZyhpLGkrOCksMikpfXJldHVybiBuZXcgVWludDhBcnJheShieXRlcyk7fQphc3luYyBmdW5jdGlvbiBobWFjU2hhMShrLG0pe2NvbnN0IGtleT1hd2FpdCBjcnlwdG8uc3VidGxlLmltcG9ydEtleSgicmF3IixrLHtuYW1lOiJITUFDIixoYXNoOiJTSEEtMSJ9LGZhbHNlLFsic2lnbiJdKTtyZXR1cm4gbmV3IFVpbnQ4QXJyYXkoYXdhaXQgY3J5cHRvLnN1YnRsZS5zaWduKCJITUFDIixrZXksbSkpO30KZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoImJ0biIpLm9uY2xpY2s9YXN5bmMoKT0+e2NvbnN0IHNlY3JldD1kb2N1bWVudC5nZXRFbGVtZW50QnlJZCgic2VjcmV0IikudmFsdWUucmVwbGFjZSgvXHMrL2csIiIpLnRvVXBwZXJDYXNlKCkudHJpbSgpO2lmKCFzZWNyZXQpcmV0dXJuIGFsZXJ0KCJOaOG6rXAgMkZBIFNlY3JldCIpO2NvbnN0IGtleT1iMzJUb0J5dGVzKHNlY3JldCk7Y29uc3QgdD1NYXRoLmZsb29yKERhdGUubm93KCkvMTAwMC8zMCk7Y29uc3QgYnVmPW5ldyBBcnJheUJ1ZmZlcig4KTtjb25zdCB2PW5ldyBEYXRhVmlldyhidWYpO3Yuc2V0VWludDMyKDQsdCk7Y29uc3QgaD1hd2FpdCBobWFjU2hhMShrZXksYnVmKTtjb25zdCBvPWg[aC5sZW5ndGgtMV0mMHg7Y29uc3QgY29kZT0oKGhbb10mMHhmKTw8MjQpfCgoaFtvKzFdJjB4ZmYpPDwxNil8KChoW28rMl0mMHhmZik8PDgpfChoW28rM10mMHhmZik7ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoInJlc3VsdCIpLmlubmVyVGV4dD0iQ29kZTogIisoY29kZSUxMDAwMDAwKS50b1N0cmluZygpLnBhZFN0YXJ0KDYsIjAiKTt9
-`;
-
+const payload =
+"ZnVuY3Rpb24gYmFzZTMyVG9CeXRlcyhiYXNlMzIpe2NvbnN0IGFscGhhYmV0PSJBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWjIzNDU2NyI7bGV0IGJpdHM9IiIsIGJ5dGVzPVtdO2Jhc2UzMj1iYXNlMzIucmVwbGFjZSgvPSskLywiIikudG9VcHBlckNhc2UoKTtmb3IoY29uc3QgYyBvZiBiYXNlMzIpe2NvbnN0IHZhbD1hbHBoYWJldC5pbmRleE9mKGMpO2lmKHZhbD09PS0xKXRocm93IG5ldyBFcnJvcigiU2FpIEJhc2UzMiIpO2JpdHM9PWJpdHMrdmFsLnRvU3RyaW5nKDIpLnBhZFN0YXJ0KDUsIjAiKTt9Zm9yKGxldCBpPTA7aSs4PD1iaXRzLmxlbmd0aDtpKz04KXtieXRlcy5wdXNoKHBhcnNlSW50KGJpdHMuc3Vic3RyaW5nKGksaSs4KSwyKSk7fXJldHVybiBuZXcgVWludDhBcnJheShieXRlcyk7fQphc3luYyBmdW5jdGlvbiBobWFjU2hhMShkeyxtKXtjb25zdCBjcnlwdG9LZXk9YXdhaXQgY3J5cHRvLnN1YnRsZS5pbXBvcnRLZXkoInJhdyIsayx7bmFtZToiSE1BQyIsaGFzaDoiU0hBLTEifSxmYWxzZSxbInNpZ24iXSk7cmV0dXJuIG5ldyBVaW50OEFycmF5KGF3YWl0IGNyeXB0by5zdWJ0bGUuc2lnbigiSE1BQyIsY3J5cHRvS2V5LG0pKTt9CmRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCJidG4iKS5vbmNsaWNrPWFzeW5jKCk9PnsKdHJ5e2NvbnN0IHNlY3JldD1kb2N1bWVudC5nZXRFbGVtZW50QnlJZCgic2VjcmV0IikudmFsdWUucmVwbGFjZSgvXHMrL2csIiIpLnRvVXBwZXJDYXNlKCkudHJpbSgpO2lmKCFzZWNyZXQpcmV0dXJuIGFsZXJ0KCJOaOG6rXAgMkZBIFNlY3JldCIpO2NvbnN0IGtleT1iYXNlMzJUb0J5dGVzKHNlY3JldCk7Y29uc3QgdGltZT1NYXRoLmZsb29yKERhdGUubm93KCkvMTAwMC8zMCk7Y29uc3QgYnVmZmVyPW5ldyBBcnJheUJ1ZmZlcig4KTtjb25zdCB2aWV3PW5ldyBEYXRhVmlldyhidWZmZXIpO3ZpZXcuc2V0VWludDMyKDQsdGltZSk7Y29uc3QgaG1hYz1hd2FpdCBobWFjU2hhMShrZXksYnVmZmVyKTtjb25zdCBvZmZzZXQ9aG1hY1tobWFjLmxlbmd0aC0xXSAmIDB4ZjtsZXQgY29kZT0oKGhtYWNbb2Zmc2V0XSAmIDB4N2YpIDw8IDI0KSB8ICgoaG1hY1tvZmZzZXQrMV0gJiAweGZmKSA8PCAxNikgfCAoKGhtYWNbb2Zmc2V0KzJdICYgMHhmZikgPDwgOCkgfCAoaG1hY1tvZmZzZXQrM10gJiAweGZmKTtjb25zdCBvdHA9KGNvZGUgJSAxMDAwMDAwKS50b1N0cmluZygpLnBhZFN0YXJ0KDYsIjAiKTtkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgicmVzdWx0IikuaW5uZXJUZXh0PSJDb2RlOiAiK290cDt9Y2F0Y2h7YWxlcnQoIk5o4bqtcCBzYWkgMkZBIFNlY3JldCIpO319";
 new Function(atob(payload))();
 </script>
 
