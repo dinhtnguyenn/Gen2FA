@@ -19,19 +19,17 @@
 
 <div id="result" class="code"></div>
 
+<!-- =====================================================
+     🔐 ANTI F12 / DEVTOOLS / VIEW SOURCE
+===================================================== -->
 <script>
-/* =====================================================
-   🔐 ANTI F12 / DEVTOOLS / VIEW SOURCE
-===================================================== */
 (function () {
-
   let blocked = false;
   const THRESHOLD = 160;
 
-  function showFakePage(reason) {
+  function block(reason) {
     if (blocked) return;
     blocked = true;
-
     console.warn("Blocked:", reason);
 
     document.documentElement.innerHTML = `
@@ -52,132 +50,64 @@
       </head>
       <body>
         <div>
-          <h1>🛑 Dừng lại 🛑</h1>
-          <p>Bạn đang truy cập trái phép!</p>
-          <p>F5 trang web để tiếp tục sử dụng</p>
+          <h1>🛑 DỪNG LẠI 🛑</h1>
+          <p>Bạn đang truy cập trái phép</p>
+          <p>F5 để tiếp tục sử dụng</p>
         </div>
       </body>
       </html>
     `;
   }
 
-  /* Chặn phím */
+  document.addEventListener("contextmenu", e => {
+    e.preventDefault();
+    block("Right Click");
+  });
+
   document.addEventListener("keydown", e => {
     if (
       e.key === "F12" ||
-      (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key)) ||
-      (e.ctrlKey && e.key === "U")
+      (e.ctrlKey && e.key === "u") ||
+      (e.ctrlKey && e.shiftKey && ["I","J","C"].includes(e.key))
     ) {
       e.preventDefault();
-      showFakePage("Shortcut");
+      block("Shortcut");
     }
   });
 
-  /* Chặn chuột phải */
-  document.addEventListener("contextmenu", e => {
-    e.preventDefault();
-    showFakePage("Right Click");
-  });
-
-  /* Phát hiện DevTools bằng viewport */
-  function detectBySize() {
+  setInterval(() => {
     if (
       window.outerWidth - window.innerWidth > THRESHOLD ||
       window.outerHeight - window.innerHeight > THRESHOLD
-    ) {
-      showFakePage("DevTools Size");
-    }
-  }
+    ) block("DevTools");
 
-  /* Phát hiện debugger */
-  function detectDebugger() {
-    const start = performance.now();
+    const t = performance.now();
     debugger;
-    if (performance.now() - start > 100) {
-      showFakePage("Debugger");
-    }
-  }
-
-  setInterval(() => {
-    detectBySize();
-    detectDebugger();
+    if (performance.now() - t > 100) block("Debugger");
   }, 500);
-
 })();
 </script>
 
+<!-- =====================================================
+     🔑 2FA CORE (ENCODED – KHÔNG COPY)
+===================================================== -->
 <script>
-/* =====================================================
-   🔑 2FA TOTP LOGIC
-===================================================== */
+/*
+  ⚠️ JS đã được encode
+  👉 View source không đọc được
+  👉 Copy không hiểu
+*/
+const _0x2fa_payload = `
+ZnVuY3Rpb24gYmFzZTMyVG9CeXRlcyhiKXtjb25zdCBhPSJBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWjIzNDU2NyI7bGV0IGJpdHM9IiIsYnl0ZXM9W107Yj1iLnJlcGxhY2UoLz0rJC8sIiIpLnRvVXBwZXJDYXNlKCk7Zm9yKGxldCBjIG9mIGIpe2NvbnN0IHY9YS5pbmRleE9mKGMpO2lmKHY9PT0tMSl0aHJvdyAwO2JpdHMrPXYudG9TdHJpbmcoMikucGFkU3RhcnQoNSwiMCIpfWZvcihsZXQgaT0wO2krODw9Yml0cy5sZW5ndGg7aSs9OCl7Ynl0ZXMucHVzaChwYXJzZUludChiaXRzLnNsaWNlKGksaSs4KSwyKSl9cmV0dXJuIG5ldyBVaW50OEFycmF5KGJ5dGVzKX0KYXN5bmMgZnVuY3Rpb24gaG1hY1NoYTEoa2V5LG1zZyl7Y29uc3Qga2V5T2JqPWF3YWl0IGNyeXB0by5zdWJ0bGUuaW1wb3J0S2V5KCJyYXciLGtleSx7bmFtZToiSE1BQyIsaGFzaDoiU0hBLTEifSxmYWxzZSxbInNpZ24iXSk7cmV0dXJuIG5ldyBVaW50OEFycmF5KGF3YWl0IGNyeXB0by5zdWJ0bGUuc2lnbigiSE1BQyIsa2V5T2JqLG1zZykpfQphc3luYyBmdW5jdGlvbiBnZW5lcmF0ZVRPVFAoKXt0cnl7Y29uc3Qgc2VjcmV0PWRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCJzZWNyZXQiKS52YWx1ZS5yZXBsYWNlKC9ccysvZywiIikudG9VcHBlckNhc2UoKS50cmltKCk7aWYoIXNlY3JldClyZXR1cm4gYWxlcnQoIk5o4bqtcCAyRkEgU2VjcmV0Iik7Y29uc3Qga2V5PWJhc2UzMlRvQnl0ZXMoc2VjcmV0KTtjb25zdCB0aW1lPU1hdGguZmxvb3IoRGF0ZS5ub3coKS8xMDAwLzMwKTtjb25zdCBidWZmZXI9bmV3IEFycmF5QnVmZmVyKDgpO2NvbnN0IHZpZXc9bmV3IERhdGFWaWV3KGJ1ZmZlcik7dmlldy5zZXRVaW50MzIoNCx0aW1lKTtjb25zdCBobWFjPWF3YWl0IGhtYWNTaGExKGtleSxidWZmZXIpO2NvbnN0IG9mZnNldD1obWFjW2htYWMubGVuZ3RoLTFdJjB4ZjtsZXQgY29kZT0oKGhtYWNbb2Zmc2V0XSYweDdmKTw8MjQpfCgoaG1hY1tvZmZzZXQrMV0mMHhmZik8PDE2KXwoKGhtYWNbb2Zmc2V0KzJdJjB4ZmYpPDw4KXwoaG1hY1tvZmZzZXQrM10mMHhmZik7Y29uc3Qgb3RwPShjb2RlJTEwMDAwMDApLnRvU3RyaW5nKCkucGFkU3RhcnQoNiwiMCIpO2RvY3VtZW50LmdldEVsZW1lbnRCeUlkKCJyZXN1bHQiKS5pbm5lclRleHQ9IkNvZGU6ICIr b3RwfWNhdGNoe2FsZXJ0KCJOaOG6rXAgc2FpIDJGQSBTZWNyZXQiKX19
+`;
 
-/* ---------- Base32 Decode ---------- */
-function base32ToBytes(base32) {
-  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-  let bits = "", bytes = [];
-
-  base32 = base32.replace(/=+$/, "").toUpperCase();
-
-  for (let c of base32) {
-    const val = alphabet.indexOf(c);
-    if (val === -1) throw new Error("Sai Base32");
-    bits += val.toString(2).padStart(5, "0");
+(function(){
+  try{
+    new Function(atob(_0x2fa_payload))();
+  }catch{
+    document.body.innerHTML="<h1>Error</h1>";
   }
-
-  for (let i = 0; i + 8 <= bits.length; i += 8) {
-    bytes.push(parseInt(bits.slice(i, i + 8), 2));
-  }
-
-  return new Uint8Array(bytes);
-}
-
-/* ---------- HMAC-SHA1 ---------- */
-async function hmacSha1(key, msg) {
-  const cryptoKey = await crypto.subtle.importKey(
-    "raw",
-    key,
-    { name: "HMAC", hash: "SHA-1" },
-    false,
-    ["sign"]
-  );
-  return new Uint8Array(await crypto.subtle.sign("HMAC", cryptoKey, msg));
-}
-
-/* ---------- Generate TOTP ---------- */
-async function generateTOTP() {
-  try {
-    const secret = document
-      .getElementById("secret")
-      .value.replace(/\s+/g, "")
-      .toUpperCase()
-      .trim();
-
-    if (!secret) return alert("Nhập 2FA Secret");
-
-    const key = base32ToBytes(secret);
-    const time = Math.floor(Date.now() / 1000 / 30);
-
-    const buffer = new ArrayBuffer(8);
-    const view = new DataView(buffer);
-    view.setUint32(4, time);
-
-    const hmac = await hmacSha1(key, buffer);
-    const offset = hmac[hmac.length - 1] & 0xf;
-
-    const code =
-      ((hmac[offset] & 0x7f) << 24) |
-      ((hmac[offset + 1] & 0xff) << 16) |
-      ((hmac[offset + 2] & 0xff) << 8) |
-      (hmac[offset + 3] & 0xff);
-
-    const otp = (code % 1_000_000).toString().padStart(6, "0");
-
-    document.getElementById("result").innerText = "Code: " + otp;
-
-  } catch {
-    alert("Nhập sai 2FA Secret");
-  }
-}
+})();
 </script>
 
 </body>
